@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import messagebox, filedialog
 from PIL import Image, ImageTk
 import random
-import numpy as np
 
 class SlidePuzzle:
     def __init__(self, root):
@@ -164,106 +163,18 @@ class SlidePuzzle:
                     return False
         return True
     
-    # def solve_game(self):
-    #     print("left to students")
-    #     while not self.check_win():
-    #         possible = self.get_possible_moves()
-    #         move = random.choice(possible)
-    #         print(possible)
-    #         print(move)
-    #         self.make_move(move[0],move[1])
-    #         if self.num_moves > 100:
-    #             break
-
-
     def solve_game(self):
-        """A simple solver that uses breadth-first search to find a solution"""
-        import queue
-        import copy
-        
-        # Display solving message
-        messagebox.showinfo("Solver", "Finding solution... This may take a moment.")
-        
-        # Reset move counter
-        self.num_moves = 0
-        
-        # Use a breadth-first search to find the solution
-        # Start with current state
-        q = queue.Queue()
-        # Store state and path to reach it
-        q.put((copy.deepcopy(self.current_state), self.empty_pos, []))
-        
-        # Keep track of visited states to avoid cycles
-        visited = set()
-        
-        # Keep track of iterations to prevent infinite loops
-        iterations = 0
-        max_iterations = 100000  # Limit search to prevent hanging
-        
-        while not q.empty() and iterations < max_iterations:
-            iterations += 1
-            
-            # Get next state to explore
-            state, empty_pos, path = q.get()
-            
-            # Skip if we've seen this state before
-            state_tuple = tuple(tuple(row) for row in state)
-            if state_tuple in visited:
-                continue
-            
-            # Mark as visited
-            visited.add(state_tuple)
-            
-            # Check if we've found the solution
-            is_solved = True
-            for i in range(self.size):
-                for j in range(self.size):
-                    expected = i * self.size + j
-                    if state[i][j] != expected:
-                        is_solved = False
-                        break
-                if not is_solved:
-                    break
-            
-            if is_solved:
-                # We found the solution!
-                print(f"Solution found in {len(path)} moves")
-                
-                # Apply the solution
-                self.execute_solution(path, 0)
-                return
-            
-            # Try all possible moves from this state
-            i, j = empty_pos
-            for di, dj in [(0, 1), (1, 0), (0, -1), (-1, 0)]:
-                new_i, new_j = i + di, j + dj
-                
-                # Check if move is valid
-                if 0 <= new_i < self.size and 0 <= new_j < self.size:
-                    # Create new state by making this move
-                    new_state = copy.deepcopy(state)
-                    new_state[i][j] = new_state[new_i][new_j]
-                    new_state[new_i][new_j] = self.size * self.size - 1
-                    
-                    # Add to queue with updated path
-                    new_path = path + [(new_i, new_j)]
-                    q.put((new_state, (new_i, new_j), new_path))
-        
-        # If we get here, we didn't find a solution
-        messagebox.showinfo("Solver", "Could not find a solution within the search limit.")
+        print("left to students")
+        while not self.check_win():
+            possible = self.get_possible_moves()
+            move = random.choice(possible)
+            print(possible)
+            print(move)
+            self.make_move(move[0],move[1])
+            if self.num_moves > 100:
+                break
 
-    def execute_solution(self, path, index):
-        """Execute the solution moves one by one with a delay"""
-        if index < len(path):
-            # Make the next move
-            i, j = path[index]
-            self.make_move(i, j)
-            
-            # Schedule the next move
-            self.root.after(300, lambda: self.execute_solution(path, index + 1))
-        else:
-            messagebox.showinfo("Solver", f"Puzzle solved in {self.num_moves} moves!")
-        
+
 
 if __name__ == "__main__":
     root = tk.Tk()
